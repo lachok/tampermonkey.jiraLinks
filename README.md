@@ -6,3 +6,6 @@ Runs on [tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dh
 
 ### Config
 Change `options` in the script to suit your environment.
+
+### Usage
+Press `Ctrl`+`i` on your keyboard to replace all Jira issue IDs on the page with links to Jira.
