@@ -11,14 +11,14 @@
 (function() {
 
     var options = {
-        jiraIssuePrefix: 'JPO',
-        jiraBrowseUrl: 'https://jira.atlassian.com/browse'
+        jiraIssuePrefix: 'EV',
+        jiraBrowseUrl: 'https://jira.evlem.net/browse'
     };
         
-    var jiraIssueWithSpaceRegex = new RegExp('^' + options.jiraIssuePrefix + ' ', 'i');
+    var jiraIssueWithSpaceAndOrDashRegex = new RegExp('^' + options.jiraIssuePrefix + ' ?(-|\\u2013|\\u2014)? ?', 'i');
     var jiraIssueRegex = new RegExp('^' + options.jiraIssuePrefix + '-\\d{1,5}', 'i');
     
-    function textNodesUnder(el){
+    function textNodesUnder(el) {
         var n, a=[], walk=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null,false);
         while(n=walk.nextNode()) a.push(n);
         return a;
@@ -27,8 +27,8 @@
     function wrapMatchesInNode(textNode) {
 
         var temp = document.createElement('div');
-
-        textNode.data = textNode.data.replace(jiraIssueWithSpaceRegex, options.jiraIssuePrefix + '-');
+        
+        textNode.data = textNode.data.replace(jiraIssueWithSpaceAndOrDashRegex, options.jiraIssuePrefix + '-');
 
         temp.innerHTML = textNode.data.replace(jiraIssueRegex, '<a href="' + options.jiraBrowseUrl + '/$&">$&</a>');
 
@@ -57,8 +57,7 @@
             var textNodes = textNodesUnder(document);
 
             for(var i = 0; i < textNodes.length; i++) {
-                if (/^EV(-| )\d{3,5}/.test(textNodes[i].wholeText)) {
-                    //textNodes[i].parentElement.style.color = '#ff0000';
+                if (jiraIssueWithSpaceAndOrDashRegex.test(textNodes[i].wholeText)) {
                     wrapMatchesInNode(textNodes[i]);
                 }
             }
@@ -67,4 +66,3 @@
     // register the handler
     document.addEventListener('keyup', doc_keyUp, false);
 })();
-
